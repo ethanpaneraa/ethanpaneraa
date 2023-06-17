@@ -3,4 +3,4 @@
 ![](https://visitor-badge.laobi.icu/badge?page_id=ethanpaneraa.ethanpaneraa)
 [![Github](https://img.shields.io/github/followers/ethanpaneraa?label=Follow&style=social)](https://github.com/ethanpaneraa)
 </div>
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ethanpaneraa&theme=dark&langs_count=10&layout=compact&size_weight=0&count_weight=1" width="400"/>
+<div align="center"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ethanpaneraa&theme=dark&langs_count=10&layout=compact&size_weight=0&count_weight=1" width="400"/></div>
