@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Allows manual triggering
   push:
     branches:
-      - main
+      - main # Runs on commits to the main branch
 
 jobs:
   update-profile:
@@ -29,15 +29,15 @@ jobs:
         run: |
           cd github-readme-generator
           cargo build --release
-          ls -al ./target/release/
-          chmod +x ./target/release/github-readme-generator
           ./target/release/github-readme-generator
 
       - name: Commit and Push Changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git pull --rebase
+          git stash --include-untracked # Stash all changes
+          git pull --rebase # Pull the latest changes
+          git stash pop # Reapply stashed changes
           git add README.md
           git commit -m "🔄 Update README" || echo "No changes to commit"
           git push || echo "No changes to push"
