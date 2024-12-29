@@ -234,7 +234,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Generate ASCII art header and badges
     let font = FIGfont::from_file("gangshit1.flf").expect("Failed to load FIGlet font");
-    let figure = font.convert("ETHAN").expect("Failed to create ASCII art");
+    let figure = font.convert("CHI").expect("Failed to create ASCII art");
     let ascii_header = figure.to_string();
     let github_followers_badge = create_ascii_badge("Followers", &github_followers.to_string(), 20);
     let github_stars_badge = create_ascii_badge("Stars", &github_stars.to_string(), 20);
