@@ -29,13 +29,15 @@ jobs:
         run: |
           cd github-readme-generator
           cargo build --release
-          ./target/release/update_readme
+          ls -al ./target/release/
+          chmod +x ./target/release/github-readme-generator
+          ./target/release/github-readme-generator
 
       - name: Commit and Push Changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git pull --rebase
-          git add ../README.md
+          git add README.md
           git commit -m "🔄 Update README" || echo "No changes to commit"
           git push || echo "No changes to push"
