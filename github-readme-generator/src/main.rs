@@ -225,37 +225,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let username = "ethanpaneraa";
     let token = env::var("GITHUB_TOKEN").expect("GITHUB_TOKEN not set");
 
-    // Fetch GitHub data
+    // Step 3: Fetch GitHub data
     let activities = get_github_activity(username, &token)?;
     let top_languages = get_all_languages(username, &token);
     let github_stats = get_github_stats(username, &token);
     let github_followers = get_github_followers(username, &token);
     let github_stars = github_stats["total_stars"].as_u64().unwrap_or(0);
 
-    // Generate ASCII art header and badges
+    // Step 4: Generate ASCII art header and badges
     let font = FIGfont::from_file("gangshit1.flf").expect("Failed to load FIGlet font");
     let figure = font.convert("CHI").expect("Failed to create ASCII art");
     let ascii_header = figure.to_string();
     let github_followers_badge = create_ascii_badge("Followers", &github_followers.to_string(), 20);
     let github_stars_badge = create_ascii_badge("Stars", &github_stars.to_string(), 20);
 
-    // Add personal introduction
-    let personal_intro = "Software engineer passionate about distributed systems, cloud computing, and web development.";
+    let mut output = "> [!WARNING]\n> ```".to_string();
 
-    let mut output = "```".to_string();
-    output += &ascii_header; 
-    output += "\n```\n\n";
+    let header_lines: Vec<&str> = ascii_header.lines().collect();
+    let badges_string = format!("{}\n\n{}", github_followers_badge, github_stars_badge);
+    let badge_lines: Vec<&str> = badges_string.lines().collect();
+    let max_header_width = header_lines
+        .iter()
+        .map(|line| line.len())
+        .max()
+        .unwrap_or(0);
 
-    output += personal_intro;
-    output += "\n\n";
+    let badge_offset = 4;
 
-    // Add badges
-    output += &github_followers_badge;
-    output += "\n\n";
-    output += &github_stars_badge;
-    output += "\n\n";
+    for i in 0..header_lines.len().max(badge_lines.len() + badge_offset) {
+        let header_part = header_lines.get(i).unwrap_or(&"").to_string();
+        let badge_part = if i >= badge_offset {
+            badge_lines.get(i - badge_offset).unwrap_or(&"").to_string()
+        } else {
+            String::new()
+        };
+        output += &format!(
+            "> {:<width$} {}\n",
+            header_part,
+            badge_part,
+            width = max_header_width + 2
+        );
+    }
 
-    // Add languages section
+    output += "> ```\n";
+    output += "> <p>software engineer interested in full-stack development, distributed systems, low-level systems.</p>\n\n";
+    output += "---\n\n";
+
     output += "#### 🛠️ Languages\n";
     output += "```css\n";
     for (lang, percentage) in top_languages {
@@ -268,13 +283,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     output += "```\n\n";
 
-    // Add stats section
     output += "#### 📊 Stats\n";
     output += "```\n";
     output += &format_github_stats(&github_stats);
     output += "\n```\n\n";
 
-    // Add activity section
     output += "#### 🔥 Activity\n";
     output += "```\n";
     output += &"-".repeat(60);
@@ -289,12 +302,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     output += &format!("Last updated: {}\n", now.format("%Y-%m-%d %H:%M:%S"));
     output += "```\n\n";
 
-    // Write to README.md in the current directory
+    output += "> [!NOTE]\n";
+    output +=
+        "> <p align=\"center\">This README is <b>auto-generated</b> with Rust and Actions</p>";
+
+    // Write to README.md
     let readme_path = "README.md";
     let mut file = File::create(readme_path).expect("Failed to create README.md");
     file.write_all(output.as_bytes())
         .expect("Failed to write to README.md");
-
     // Move the README.md file up one directory level
     let parent_path = "../README.md";
     fs::rename(readme_path, parent_path)
